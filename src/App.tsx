@@ -5,6 +5,7 @@ class Counter {
   counter: number;
   setCounter: (c: number) => void
 
+  audio: HTMLAudioElement | undefined
   initial_count: number = 0;
   initial_time: number = 0;
 
@@ -16,27 +17,34 @@ class Counter {
   display() {
     const minutes = Math.floor(this.counter / 60);
     const seconds = this.counter % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `${String(minutes)}:${String(seconds).padStart(2, '0')}`;
   }
 
-  start() {
+  start(audio: HTMLAudioElement | undefined) {
+    this.audio = audio
     this.initial_time = Date.now()
     setTimeout(this.loop.bind(this), 1000);
   }
 
   loop() {
     const current_time = Date.now()
-    this.setCounter(Math.max(this.initial_count - Math.floor((current_time - this.initial_time) / 1000), 0))
-    if (this.counter > 0) {
-      setTimeout(this.loop.bind(this), this.initial_count - this.counter + 1 -  (current_time - this.initial_time) / 1000);
+    const counter = Math.max(this.initial_count - Math.floor((current_time - this.initial_time) / 1000), 0)
+    const timeout = 1000 * (this.initial_count - counter + 1) -  (current_time - this.initial_time)
+    console.log("Here", Date.now() - this.initial_time, counter, timeout)
+    this.setCounter(counter)
+    if (counter > 0) {
+      setTimeout(this.loop.bind(this), timeout);
+    } else if (this.audio) {
+      this.audio.play()
     }
   }
 }
 
 
 function App() {
-  const [count, setCounter] = React.useState(60);  // eslint-disable-line react-hooks/rules-of-hooks
-  const counter = new Counter(60, count, setCounter);
+  const length = 5;
+  const [count, setCounter] = React.useState(length);  // eslint-disable-line react-hooks/rules-of-hooks
+  const counter = new Counter(length, count, setCounter);
 
   return (
     <>
@@ -51,7 +59,7 @@ function App() {
         </label>
       </div>
       <div id="content">
-        <button id="timer" onClick={counter.start.bind(counter)}>{counter.display()}</button>
+        <button id="timer" onClick={() => counter.start.bind(counter)(new Audio("beep.mp3"))}>{counter.display()}</button>
       </div>
     </>
   )
