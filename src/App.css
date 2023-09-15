@@ -1,0 +1,26 @@
+#menu {
+  float: right
+}
+
+html, body, #root {
+  height: 100%
+}
+
+#content {
+  /* text-align: center; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+}
+
+#timer {
+  border-color: black;
+  border-radius: 50%;
+  height: 80vmin;
+  width: 80vmin;
+  font-size: 30vmin;
+  text-align: center;
+  padding: 0;
+  /* padding: 40%; */
+}
