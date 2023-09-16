@@ -17,25 +17,25 @@ function App() {
 
   function start(audio: HTMLAudioElement | undefined) {
     if (paused.current) {
-      clearInterval(timer.current)
-      lastUpdate.current = Date.now()
-      timer.current  = setInterval(step, 1000, audio);
-      paused.current = false
+      clearInterval(timer.current);
+      lastUpdate.current = Date.now();
+      timer.current = setInterval(step, 1000, audio);
+      paused.current = false;
     } else if (timer.current) {
-      clearInterval(timer.current)
-      timeLeft.current -= Date.now() - lastUpdate.current
-      paused.current = true
+      clearInterval(timer.current);
+      timeLeft.current -= Date.now() - lastUpdate.current;
+      paused.current = true;
     } else {
-      reset(audio)
+      reset(audio);
     }
   }
 
   function reset(audio: HTMLAudioElement | undefined) {
-    clearInterval(timer.current)
+    clearInterval(timer.current);
     timeLeft.current = initialCount * 1000;
     lastUpdate.current = Date.now();
-    paused.current = false
-    setCount(initialCount)
+    paused.current = false;
+    setCount(initialCount);
     timer.current = setInterval(step, 1000, audio);
   }
 
@@ -45,7 +45,7 @@ function App() {
     setCount(Math.ceil(timeLeft.current / 1000));
     if (timeLeft.current <= 0) {
       clearInterval(timer.current);
-      timer.current = 0
+      timer.current = 0;
       audio?.play();
     }
   }
@@ -56,30 +56,9 @@ function App() {
         <h1 id="title">Game Timer</h1>
         <label id="menu">
           <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-            <line
-              x1="5"
-              y1="10"
-              x2="25"
-              y2="10"
-              stroke="black"
-              stroke-width="2"
-            />
-            <line
-              x1="5"
-              y1="15"
-              x2="25"
-              y2="15"
-              stroke="black"
-              stroke-width="2"
-            />
-            <line
-              x1="5"
-              y1="20"
-              x2="25"
-              y2="20"
-              stroke="black"
-              stroke-width="2"
-            />
+            <line x1="5" y1="10" x2="25" y2="10" stroke="black" strokeWidth="2" />
+            <line x1="5" y1="15" x2="25" y2="15" stroke="black" strokeWidth="2" />
+            <line x1="5" y1="20" x2="25" y2="20" stroke="black" strokeWidth="2" />
           </svg>
         </label>
       </div>
