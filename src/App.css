@@ -1,9 +1,11 @@
 #menu {
-  float: right
+  float: right;
 }
 
-html, body, #root {
-  height: 100%
+html,
+body,
+#root {
+  height: 100%;
 }
 
 #content {

@@ -1,50 +1,34 @@
 import React from "react";
-import './App.css'
-
-class Counter {
-  counter: number;
-  setCounter: (c: number) => void
-
-  audio: HTMLAudioElement | undefined
-  initial_count: number = 0;
-  initial_time: number = 0;
-
-  constructor(initial: number, seconds: number, setCounter: (c: number) => void) {
-    this.initial_count = initial;
-    this.counter = seconds;
-    this.setCounter = setCounter;
-  }
-  display() {
-    const minutes = Math.floor(this.counter / 60);
-    const seconds = this.counter % 60;
-    return `${String(minutes)}:${String(seconds).padStart(2, '0')}`;
-  }
-
-  start(audio: HTMLAudioElement | undefined) {
-    this.audio = audio
-    this.initial_time = Date.now()
-    setTimeout(this.loop.bind(this), 1000);
-  }
-
-  loop() {
-    const current_time = Date.now()
-    const counter = Math.max(this.initial_count - Math.floor((current_time - this.initial_time) / 1000), 0)
-    const timeout = 1000 * (this.initial_count - counter + 1) -  (current_time - this.initial_time)
-    console.log("Here", Date.now() - this.initial_time, counter, timeout)
-    this.setCounter(counter)
-    if (counter > 0) {
-      setTimeout(this.loop.bind(this), timeout);
-    } else if (this.audio) {
-      this.audio.play()
-    }
-  }
-}
+import "./App.css";
 
 
 function App() {
-  const length = 5;
-  const [count, setCounter] = React.useState(length);  // eslint-disable-line react-hooks/rules-of-hooks
-  const counter = new Counter(length, count, setCounter);
+  const initialCount = 5;
+  const [count, setCount] = React.useState(initialCount);
+  const timer = React.useRef(0);
+  const initialTime = React.useRef(0)
+
+  function display() {
+    const minutes = Math.floor(count / 60);
+    const seconds = count % 60;
+    return `${String(minutes)}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  function start(audio: HTMLAudioElement | undefined) {
+    clearInterval(timer.current);
+    setCount(initialCount)
+    initialTime.current = Date.now()
+    timer.current = setInterval(loop, 1000, audio);
+  }
+
+  function loop(audio: HTMLAudioElement | undefined) {
+    const left = Math.ceil(initialCount - (Date.now() - initialTime.current) / 1000)
+    setCount(left);
+    if (left == 0) {
+      clearInterval(timer.current);
+      audio?.play();
+    }
+  }
 
   return (
     <>
@@ -59,10 +43,12 @@ function App() {
         </label>
       </div>
       <div id="content">
-        <button id="timer" onClick={() => counter.start.bind(counter)(new Audio("beep.mp3"))}>{counter.display()}</button>
+        <button id="timer" onClick={start.bind(null, new Audio("beep.mp3"))}>
+          {display()}
+        </button>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
