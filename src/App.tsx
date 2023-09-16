@@ -2,13 +2,12 @@ import React from "react";
 import "./App.css";
 
 function App() {
-  const initialCount = 30;
+  const initialCount = 5;
   const [count, setCount] = React.useState(initialCount);
   const timer = React.useRef(0);
   const timeLeft = React.useRef(0);
   const lastUpdate = React.useRef(0);
   const paused = React.useRef(false);
-  const beginning = React.useRef(0);
 
   function display() {
     const minutes = Math.floor(count / 60);
@@ -27,11 +26,17 @@ function App() {
       timeLeft.current -= Date.now() - lastUpdate.current
       paused.current = true
     } else {
-      beginning.current = Date.now()
-      timeLeft.current = initialCount * 1000;
-      lastUpdate.current = Date.now();
-      timer.current = setInterval(step, 1000, audio);
+      reset(audio)
     }
+  }
+
+  function reset(audio: HTMLAudioElement | undefined) {
+    clearInterval(timer.current)
+    timeLeft.current = initialCount * 1000;
+    lastUpdate.current = Date.now();
+    paused.current = false
+    setCount(initialCount)
+    timer.current = setInterval(step, 1000, audio);
   }
 
   function step(audio: HTMLAudioElement | undefined) {
@@ -40,6 +45,7 @@ function App() {
     setCount(Math.ceil(timeLeft.current / 1000));
     if (timeLeft.current <= 0) {
       clearInterval(timer.current);
+      timer.current = 0
       audio?.play();
     }
   }
@@ -83,6 +89,10 @@ function App() {
           onClick={() => {
             const audio = new Audio("beep.mp3");
             start(audio);
+          }}
+          onDoubleClick={() => {
+            const audio = new Audio("beep.mp3");
+            reset(audio);
           }}
         >
           {display()}
