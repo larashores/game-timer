@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 
 function App() {
-  const initialCount = 5;
+  const initialCount = 60;
   const [count, setCount] = React.useState(initialCount);
   const timer = React.useRef(0);
   const timeLeft = React.useRef(0);
