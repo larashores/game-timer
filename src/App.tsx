@@ -2,10 +2,13 @@ import React from "react";
 import "./App.css";
 
 function App() {
-  const initialCount = 60;
+  const initialCount = 30;
   const [count, setCount] = React.useState(initialCount);
   const timer = React.useRef(0);
-  const initialTime = React.useRef(0);
+  const timeLeft = React.useRef(0);
+  const lastUpdate = React.useRef(0);
+  const paused = React.useRef(false);
+  const beginning = React.useRef(0);
 
   function display() {
     const minutes = Math.floor(count / 60);
@@ -14,18 +17,28 @@ function App() {
   }
 
   function start(audio: HTMLAudioElement | undefined) {
-    clearInterval(timer.current);
-    setCount(initialCount);
-    initialTime.current = Date.now();
-    timer.current = setInterval(loop, 1000, audio);
+    if (paused.current) {
+      clearInterval(timer.current)
+      lastUpdate.current = Date.now()
+      timer.current  = setInterval(step, 1000, audio);
+      paused.current = false
+    } else if (timer.current) {
+      clearInterval(timer.current)
+      timeLeft.current -= Date.now() - lastUpdate.current
+      paused.current = true
+    } else {
+      beginning.current = Date.now()
+      timeLeft.current = initialCount * 1000;
+      lastUpdate.current = Date.now();
+      timer.current = setInterval(step, 1000, audio);
+    }
   }
 
-  function loop(audio: HTMLAudioElement | undefined) {
-    const left = Math.ceil(
-      initialCount - (Date.now() - initialTime.current) / 1000,
-    );
-    setCount(left);
-    if (left == 0) {
+  function step(audio: HTMLAudioElement | undefined) {
+    timeLeft.current -= Date.now() - lastUpdate.current;
+    lastUpdate.current = Date.now();
+    setCount(Math.ceil(timeLeft.current / 1000));
+    if (timeLeft.current <= 0) {
       clearInterval(timer.current);
       audio?.play();
     }
