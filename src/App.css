@@ -1,5 +1,10 @@
-#menu {
-  float: right;
+#header {
+  display: flex;
+  align-items: center;
+}
+
+#title {
+  flex-grow: 1;
 }
 
 html,
