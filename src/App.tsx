@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 
 function App() {
-  const initialCount = 5;
+  const initialCount = 60;
   const [count, setCount] = React.useState(initialCount);
   const timer = React.useRef(0);
   const initialTime = React.useRef(0);
@@ -65,7 +65,13 @@ function App() {
         </label>
       </div>
       <div id="content">
-        <button id="timer" onClick={start.bind(null, new Audio("beep.mp3"))}>
+        <button
+          id="timer"
+          onClick={() => {
+            const audio = new Audio("beep.mp3");
+            start(audio);
+          }}
+        >
           {display()}
         </button>
       </div>
