@@ -42,7 +42,7 @@ function App() {
   function step(audio: HTMLAudioElement | undefined) {
     timeLeft.current -= Date.now() - lastUpdate.current;
     lastUpdate.current = Date.now();
-    setCount(Math.ceil(timeLeft.current / 1000));
+    setCount(Math.max(Math.ceil(timeLeft.current / 1000), 0));
     if (timeLeft.current <= 0) {
       clearInterval(timer.current);
       timer.current = 0;
